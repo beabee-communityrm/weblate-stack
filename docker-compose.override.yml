@@ -1,0 +1,20 @@
+services:
+  weblate:
+    image: weblate/weblate:5.10 # Fix version so we manage updates
+    labels:
+      - "traefik.docker.network=traefik-ingress"
+      - "traefik.enable=true"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.entryPoints=https"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${HIVE_DOMAIN}`)"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls=true"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.tls.certResolver=letsencrypt"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=oauthAuth@file,secHeaders@file"
+      - "traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=8080"
+    networks:
+      - traefik-ingress
+    env_file:
+      - stack.env
+
+networks:
+  traefik-ingress:
+    external: true
