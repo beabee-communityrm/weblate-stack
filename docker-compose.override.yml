@@ -11,10 +11,21 @@ services:
       - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=oauthAuth@file,secHeaders@file"
       - "traefik.http.services.${COMPOSE_PROJECT_NAME}.loadbalancer.server.port=8080"
     networks:
+      - internal
       - traefik-ingress
     env_file:
       - stack.env
 
+  database:
+    networks:
+      - internal
+
+  cache:
+    networks:
+      - internal
+
 networks:
   traefik-ingress:
     external: true
+  internal:
+    driver: bridge
